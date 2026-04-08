@@ -216,7 +216,7 @@ export default function BannersPage() {
           className="flex items-center gap-2 bg-[#5a2a0f] text-white px-4 py-2 rounded-lg hover:bg-[#4a240c] transition"
         >
           <Plus size={20} />
-          Add Banner
+          Add Banners
         </button>
       </div>
 
