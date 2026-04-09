@@ -4,18 +4,7 @@ import Categories from "@/components/Categories";
 import ProductSection from "@/components/ProductSection";
 import Reviews from "@/components/Reviews";
 import Videos from "@/components/Videos";
-
-// Helper to get image URL
-const getImageUrl = (path) => {
-  if (!path) return "/images/placeholder.jpg";
-  if (path.startsWith('http://') || path.startsWith('https://')) {
-    return path;
-  }
-  if (path.startsWith('/images/') || path.startsWith('images/')) {
-    return path.startsWith('/') ? path : `/${path}`;
-  }
-  return `/${path}`;
-};
+import { getImageUrl } from "@/lib/cdn";
 
 // Default sections fallback
 const defaultSections = [
@@ -73,7 +62,7 @@ async function getSectionProducts(section, limit = 4) {
       price: p.price.toString(),
       oldPrice: p.oldPrice?.toString() || "",
       discount: p.discount || 0,
-      image: p.images[0]?.url ? getImageUrl(p.images[0].url) : "/images/bestsellers/1.webp",
+      image: p.images[0]?.url ? getImageUrl(p.images[0].url) : "",
     }));
   } catch (error) {
     console.error("Error fetching section products:", error);

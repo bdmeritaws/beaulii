@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { getImageUrl } from "@/lib/cdn";
 import Link from "next/link";
 
 // Default fallback banners
@@ -22,21 +23,7 @@ const defaultSlides = [
   },
 ];
 
-// Helper to get image URL
-const getImageUrl = (path) => {
-  if (!path) return "/images/placeholder.jpg";
-  if (path.startsWith('http://') || path.startsWith('https://')) {
-    return path;
-  }
-  // Don't add cdn/ prefix for paths that already start with /images/ or images/
-  if (path.startsWith('/images/') || path.startsWith('images/')) {
-    return path.startsWith('/') ? path : `/${path}`;
-  }
-  const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
-  const cleanPath = path.startsWith('/') ? path.slice(1) : path;
-  const cdnPath = cleanPath.startsWith('cdn/') ? cleanPath : `cdn/${cleanPath}`;
-  return `${baseUrl}/${cdnPath}`;
-};
+
 
 export default function Hero() {
   const [current, setCurrent] = useState(0);

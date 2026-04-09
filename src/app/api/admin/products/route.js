@@ -50,28 +50,22 @@ export async function GET(request) {
       where.productType = productType;
     }
 
-    const [products, total] = await Promise.all([
-      prisma.product.findMany({
-        where,
-        orderBy: { createdAt: "desc" },
-        skip: (page - 1) * limit,
-        take: limit,
-        include: {
-          categories: {
-            include: {
-              category: true,
-            },
-          },
-          images: {
-            orderBy: { sortOrder: "asc" },
-          },
-          _count: {
-            select: { reviews: true },
-          },
+    const products = await prisma.product.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+      skip: (page - 1) * limit,
+      take: limit,
+      include: {
+        images: {
+          orderBy: { sortOrder: "asc" },
         },
-      }),
-      prisma.product.count({ where }),
-    ]);
+        _count: {
+          select: { reviews: true },
+        },
+      },
+    });
+
+    const total = await prisma.product.count({ where });
 
     return NextResponse.json({
       products,

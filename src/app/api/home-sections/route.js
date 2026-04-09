@@ -62,17 +62,6 @@ export async function GET(request) {
                 orderBy: { sortOrder: "asc" },
                 take: 1,
               },
-              categories: {
-                include: {
-                  category: {
-                    select: {
-                      id: true,
-                      name: true,
-                      slug: true,
-                    },
-                  },
-                },
-              },
             },
           });
 

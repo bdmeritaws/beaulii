@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { getImageUrl } from "@/lib/cdn";
 
 // GET - List all public products with optional filtering
 export async function GET(request) {
@@ -30,36 +31,29 @@ export async function GET(request) {
       where.productType = productType.toUpperCase();
     }
 
-    const [products, total] = await Promise.all([
-      prisma.product.findMany({
-        where,
-        orderBy: { createdAt: "desc" },
-        skip: (page - 1) * limit,
-        take: limit,
-        include: {
-          categories: {
-            include: {
-              category: {
-                select: {
-                  id: true,
-                  name: true,
-                  slug: true,
-                },
-              },
-            },
-          },
-          images: {
-            orderBy: { sortOrder: "asc" },
-            take: 1, // Get primary image
+    const products = await prisma.product.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+      skip: (page - 1) * limit,
+      take: limit,
+      include: {
+        images: {
+          orderBy: { sortOrder: "asc" },
+          take: 1,
+        },
+        categories: {
+          include: {
+            category: true,
           },
         },
-      }),
-      prisma.product.count({ where }),
-    ]);
+      },
+    });
+
+    const total = await prisma.product.count({ where });
 
     // Transform products to match frontend format
     const transformedProducts = products.map((product) => {
-      const primaryImage = product.images[0]?.url || null;
+      const primaryImage = product.images[0]?.url ? getImageUrl(product.images[0].url) : null;
       
       return {
         id: product.id,
@@ -70,7 +64,7 @@ export async function GET(request) {
         oldPrice: product.oldPrice,
         discount: product.discount,
         image: primaryImage,
-        categories: product.categories.map((pc) => pc.category),
+        categories: product.categories ? product.categories.map((pc) => pc.category) : [],
         isFeatured: product.isFeatured,
         productType: product.productType,
       };

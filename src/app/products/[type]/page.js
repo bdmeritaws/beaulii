@@ -1,19 +1,61 @@
 import ProductsGrid from "@/components/ProductsGrid";
+import { prisma } from "@/lib/prisma";
 
-/* ================= STATIC EXPORT ================= */
-export function generateStaticParams() {
-  return [
-    { type: "bestseller" },
-    { type: "new-arrival" },
-    { type: "combo" },
-  ];
+export async function generateMetadata({ params }) {
+  const { type } = await params;
+  return {
+    title: `${type.replace("-", " ").toUpperCase()} - Beaulii`,
+  };
 }
 
-/* ================= PAGE ================= */
 export default async function ProductPage({ params }) {
   const { type } = await params;
 
-  // Map URL type to category slug or product type
+  const category = await prisma.category.findUnique({
+    where: { slug: type, isActive: true },
+  });
+
+  if (category) {
+    return (
+      <section className="bg-[#f4f1ee] min-h-screen py-8 sm:py-10 md:py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="mb-6 sm:mb-8 text-center">
+            <h2 className="text-xl sm:text-2xl md:text-4xl font-bold text-[#5a2a0f] tracking-wide">
+              {category.name}
+            </h2>
+            {category.description && (
+              <p className="mt-2 text-gray-600">{category.description}</p>
+            )}
+          </div>
+
+          <div className="bg-white rounded-xl shadow-sm border border-[#e5ddd5] p-4 sm:p-5 mb-6 sm:mb-8">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex flex-wrap items-center gap-3 text-xs sm:text-sm text-[#3b1f0f]">
+                <span className="font-semibold">Filter:</span>
+                <button className="px-3 py-1 rounded-lg border border-gray-300 hover:bg-gray-100 transition">
+                  Availability ▾
+                </button>
+                <button className="px-3 py-1 rounded-lg border border-gray-300 hover:bg-gray-100 transition">
+                  Price ▾
+                </button>
+              </div>
+              <div className="flex items-center justify-between sm:justify-end gap-4 text-xs sm:text-sm text-[#3b1f0f]">
+                <div className="text-gray-500">
+                  <span>Loading products...</span>
+                </div>
+                <button className="px-3 py-1 rounded-lg border border-gray-300 hover:bg-gray-100 transition">
+                  Sort by: Featured ▾
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <ProductsGrid category={type} />
+        </div>
+      </section>
+    );
+  }
+
   const getCategoryParams = (productType) => {
     switch (productType) {
       case "bestseller":
@@ -27,7 +69,7 @@ export default async function ProductPage({ params }) {
     }
   };
 
-  const { category, type: productType } = getCategoryParams(type);
+  const { category: cat, type: productType } = getCategoryParams(type);
 
   if (!type) {
     return (
@@ -82,7 +124,7 @@ export default async function ProductPage({ params }) {
         </div>
 
         {/* PRODUCT GRID - Fetches from API */}
-        <ProductsGrid category={category} type={productType} />
+        <ProductsGrid category={cat} type={productType} />
 
       </div>
     </section>

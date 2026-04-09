@@ -272,21 +272,21 @@ export default function BannersPage() {
                         
                         setFormData(prev => ({ ...prev, image: 'uploading...' }));
                         
-                        try {
-                          const formDataUpload = new FormData();
-                          formDataUpload.append('file', file);
-                          formDataUpload.append('folder', 'banners');
-                          
-                          const res = await fetch('/api/admin/upload', {
-                            method: 'POST',
-                            body: formDataUpload,
-                          });
-                          const data = await res.json();
-                          
-                          if (data.success) {
-                            setFormData(prev => ({ ...prev, image: data.path }));
-                          } else {
-                            alert('Upload failed: ' + data.error);
+                          try {
+                            const formDataUpload = new FormData();
+                            formDataUpload.append('file', file);
+                            formDataUpload.append('folder', 'banner-image');
+                            
+                            const res = await fetch('/api/admin/upload', {
+                              method: 'POST',
+                              body: formDataUpload,
+                            });
+                            const data = await res.json();
+                            
+                            if (data.success) {
+                              setFormData(prev => ({ ...prev, image: data.path }));
+                            } else {
+                              alert('Upload failed: ' + data.error);
                             setFormData(prev => ({ ...prev, image: '' }));
                           }
                         } catch (error) {
@@ -337,21 +337,21 @@ export default function BannersPage() {
                         
                         setFormData(prev => ({ ...prev, mobileImage: 'uploading...' }));
                         
-                        try {
-                          const formDataUpload = new FormData();
-                          formDataUpload.append('file', file);
-                          formDataUpload.append('folder', 'banners');
-                          
-                          const res = await fetch('/api/admin/upload', {
-                            method: 'POST',
-                            body: formDataUpload,
-                          });
-                          const data = await res.json();
-                          
-                          if (data.success) {
-                            setFormData(prev => ({ ...prev, mobileImage: data.path }));
-                          } else {
-                            alert('Upload failed: ' + data.error);
+                          try {
+                            const formDataUpload = new FormData();
+                            formDataUpload.append('file', file);
+                            formDataUpload.append('folder', 'banner-image');
+                            
+                            const res = await fetch('/api/admin/upload', {
+                              method: 'POST',
+                              body: formDataUpload,
+                            });
+                            const data = await res.json();
+                            
+                            if (data.success) {
+                              setFormData(prev => ({ ...prev, mobileImage: data.path }));
+                            } else {
+                              alert('Upload failed: ' + data.error);
                             setFormData(prev => ({ ...prev, mobileImage: '' }));
                           }
                         } catch (error) {

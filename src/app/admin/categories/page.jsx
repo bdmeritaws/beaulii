@@ -304,7 +304,7 @@ export default function CategoriesPage() {
                             try {
                               const formDataUpload = new FormData();
                               formDataUpload.append('file', file);
-                              formDataUpload.append('folder', 'categories');
+                              formDataUpload.append('folder', 'category');
                               
                               const res = await fetch('/api/admin/upload', {
                                 method: 'POST',
@@ -312,8 +312,8 @@ export default function CategoriesPage() {
                               });
                               const data = await res.json();
                               
-                              if (data.success) {
-                                setFormData(prev => ({ ...prev, image: data.path }));
+                               if (data.success) {
+                                 setFormData(prev => ({ ...prev, image: data.path }));
                               } else {
                                 alert('Upload failed: ' + data.error);
                                 setFormData(prev => ({ ...prev, image: '' }));

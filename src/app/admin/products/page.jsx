@@ -5,21 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAdminAuth } from "@/components/AdminAuth";
-
-// CDN Image URL Helper - Works on client side
-const getImageUrl = (path) => {
-  if (!path) return null;
-  // If already a full URL, return as-is
-  if (path.startsWith('http://') || path.startsWith('https://')) {
-    return path;
-  }
-  // Get base URL from window location for client-side
-  const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
-  // Ensure path starts with /cdn/
-  const cleanPath = path.startsWith('/') ? path.slice(1) : path;
-  const cdnPath = cleanPath.startsWith('cdn/') ? cleanPath : `cdn/${cleanPath}`;
-  return `${baseUrl}/${cdnPath}`;
-};
+import { getImageUrl } from "@/lib/cdn";
 import {
   Plus,
   Edit,
@@ -184,7 +170,7 @@ export default function ProductsPage() {
     try {
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('folder', 'products');
+      formData.append('folder', 'product-image');
 
       const response = await fetch('/api/admin/upload', {
         method: 'POST',
@@ -1155,7 +1141,7 @@ export default function ProductsPage() {
                         if (!file) return;
                         const formData = new FormData();
                         formData.append('file', file);
-                        formData.append('folder', 'products');
+                        formData.append('folder', 'product-image');
                         const res = await fetch('/api/admin/upload', { method: 'POST', body: formData });
                         const data = await res.json();
                         if (data.success) {
@@ -1278,7 +1264,7 @@ export default function ProductsPage() {
                         if (!file) return;
                         const f = new FormData();
                         f.append('file', file);
-                        f.append('folder', 'products');
+                        f.append('folder', 'product-image');
                         const res = await fetch('/api/admin/upload', { method: 'POST', body: f });
                         const data = await res.json();
                         if (data.success) setFormData(p => ({ ...p, beforeImage: data.path }));
@@ -1309,7 +1295,7 @@ export default function ProductsPage() {
                         if (!file) return;
                         const f = new FormData();
                         f.append('file', file);
-                        f.append('folder', 'products');
+                        f.append('folder', 'product-image');
                         const res = await fetch('/api/admin/upload', { method: 'POST', body: f });
                         const data = await res.json();
                         if (data.success) setFormData(p => ({ ...p, afterImage: data.path }));
