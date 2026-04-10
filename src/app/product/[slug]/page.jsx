@@ -3,6 +3,7 @@ import ProductInfo from "@/components/product/ProductInfo";
 import TriedAndTested from "@/components/product/TriedAndTested";
 import WhatToExpect from "@/components/product/WhatToExpect";
 import HowToUse from "@/components/product/HowToUse";
+import Ingredients from "@/components/product/Ingredients";
 import WhyBeaulii from "@/components/product/WhyBeaulii";
 import Reviews from "@/components/Reviews";
 import ProductSection from "@/components/ProductSection";
@@ -103,6 +104,8 @@ export default async function ProductDetailsPage({ params }) {
         resultClaim: product.resultClaim,
         beforeImage: product.beforeImage ? getImageUrl(product.beforeImage) : null,
         afterImage: product.afterImage ? getImageUrl(product.afterImage) : null,
+        ingredient: product.ingredient || "",
+        howToUse: product.howToUse || "",
       };
     }
   } catch (error) {
@@ -139,7 +142,8 @@ export default async function ProductDetailsPage({ params }) {
           beforeImage={productData.beforeImage} 
           afterImage={productData.afterImage} 
         />
-        <HowToUse />
+        <Ingredients product={productData} />
+        <HowToUse product={productData} />
         <WhyBeaulii />        <Reviews />
         <ProductSection title="bestseller" />
 

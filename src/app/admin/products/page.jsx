@@ -6,6 +6,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAdminAuth } from "@/components/AdminAuth";
 import { getImageUrl } from "@/lib/cdn";
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
 import { Package } from "lucide-react";
 import {
   Plus,
@@ -20,6 +22,152 @@ import {
   X,
 } from "lucide-react";
 
+// Reusable Tiptap Editor Component
+const TiptapEditor = ({ value, onChange, placeholder }) => {
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const editor = useEditor({
+    immediatelyRender: false,
+    extensions: [
+      StarterKit.configure({
+        heading: {
+          levels: [1, 2, 3],
+        },
+      }),
+    ],
+    content: value,
+    editorProps: {
+      attributes: {
+        class: 'prose prose-sm max-w-none p-4 min-h-[150px] focus:outline-none',
+      },
+    },
+    onUpdate: ({ editor }) => {
+      onChange(editor.getHTML());
+    },
+    placeholder,
+  });
+
+  // Update editor content when value changes externally (for edit mode)
+  useEffect(() => {
+    if (editor && value !== editor.getHTML()) {
+      editor.commands.setContent(value || '');
+    }
+  }, [value, editor]);
+
+  if (!mounted) {
+    return (
+      <div className="border border-gray-300 rounded-lg p-4 min-h-[200px] animate-pulse bg-gray-50">
+        <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+        <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+        <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="border border-gray-300 rounded-lg overflow-hidden">
+      <MenuBar editor={editor} />
+      <EditorContent editor={editor} />
+    </div>
+  );
+};
+
+// Reusable Tiptap Menu Bar
+const MenuBar = ({ editor }) => {
+  if (!editor) {
+    return null
+  }
+
+  return (
+    <div className="flex flex-wrap gap-1 p-2 bg-gray-50 border border-gray-300 rounded-t-lg border-b-0">
+      <button
+        onClick={() => editor.chain().focus().toggleBold().run()}
+        className={`p-2 rounded ${editor.isActive('bold') ? 'bg-[#5a2a0f] text-white' : 'hover:bg-gray-200'}`}
+        type="button"
+      >
+        <strong>B</strong>
+      </button>
+      <button
+        onClick={() => editor.chain().focus().toggleItalic().run()}
+        className={`p-2 rounded ${editor.isActive('italic') ? 'bg-[#5a2a0f] text-white' : 'hover:bg-gray-200'}`}
+        type="button"
+      >
+        <em>I</em>
+      </button>
+      <button
+        onClick={() => editor.chain().focus().toggleStrike().run()}
+        className={`p-2 rounded ${editor.isActive('strike') ? 'bg-[#5a2a0f] text-white' : 'hover:bg-gray-200'}`}
+        type="button"
+      >
+        <s>S</s>
+      </button>
+      <div className="w-px h-8 bg-gray-300 mx-1" />
+      <button
+        onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+        className={`p-2 rounded ${editor.isActive('heading', { level: 1 }) ? 'bg-[#5a2a0f] text-white' : 'hover:bg-gray-200'}`}
+        type="button"
+      >
+        H1
+      </button>
+      <button
+        onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+        className={`p-2 rounded ${editor.isActive('heading', { level: 2 }) ? 'bg-[#5a2a0f] text-white' : 'hover:bg-gray-200'}`}
+        type="button"
+      >
+        H2
+      </button>
+      <button
+        onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+        className={`p-2 rounded ${editor.isActive('heading', { level: 3 }) ? 'bg-[#5a2a0f] text-white' : 'hover:bg-gray-200'}`}
+        type="button"
+      >
+        H3
+      </button>
+      <div className="w-px h-8 bg-gray-300 mx-1" />
+      <button
+        onClick={() => editor.chain().focus().toggleBulletList().run()}
+        className={`p-2 rounded ${editor.isActive('bulletList') ? 'bg-[#5a2a0f] text-white' : 'hover:bg-gray-200'}`}
+        type="button"
+      >
+        • List
+      </button>
+      <button
+        onClick={() => editor.chain().focus().toggleOrderedList().run()}
+        className={`p-2 rounded ${editor.isActive('orderedList') ? 'bg-[#5a2a0f] text-white' : 'hover:bg-gray-200'}`}
+        type="button"
+      >
+        1. List
+      </button>
+      <div className="w-px h-8 bg-gray-300 mx-1" />
+      <button
+        onClick={() => editor.chain().focus().setTextAlign('left').run()}
+        className={`p-2 rounded ${editor.isActive({ textAlign: 'left' }) ? 'bg-[#5a2a0f] text-white' : 'hover:bg-gray-200'}`}
+        type="button"
+      >
+        ⬅
+      </button>
+      <button
+        onClick={() => editor.chain().focus().setTextAlign('center').run()}
+        className={`p-2 rounded ${editor.isActive({ textAlign: 'center' }) ? 'bg-[#5a2a0f] text-white' : 'hover:bg-gray-200'}`}
+        type="button"
+      >
+        ⬌
+      </button>
+      <button
+        onClick={() => editor.chain().focus().setTextAlign('right').run()}
+        className={`p-2 rounded ${editor.isActive({ textAlign: 'right' }) ? 'bg-[#5a2a0f] text-white' : 'hover:bg-gray-200'}`}
+        type="button"
+      >
+        ➡
+      </button>
+    </div>
+  )
+}
+
 export default function ProductsPage() {
   const [mounted, setMounted] = useState(false);
   const [products, setProducts] = useState([]);
@@ -33,6 +181,8 @@ export default function ProductsPage() {
   const [filterCategory, setFilterCategory] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
   const [pagination, setPagination] = useState({ page: 1, limit: 50, total: 0, totalPages: 0 });
+  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [sortBy, setSortBy] = useState("");
   
   const [formData, setFormData] = useState({
     title: "",
@@ -43,28 +193,34 @@ export default function ProductsPage() {
     oldPrice: "",
     discount: "",
     mrp: "",
-    sku: "",
-    stockQuantity: 0,
-    lowStockAlert: 10,
-    isInStock: true,
+     sku: "",
+     barcode: "",
+     weight: "",
+     width: "",
+     height: "",
+     length: "",
+     stockQuantity: 0,
+     lowStockAlert: 10,
+     isInStock: true,
     skinType: "",
     concern: "",
     ingredient: "",
     howToUse: "",
     resultClaim: "",
-    badges: "",
-    thumbnail: "",
-    videoUrl: "",
-    beforeImage: "",
-    afterImage: "",
-    metaTitle: "",
-    metaDescription: "",
-    isActive: true,
-    isFeatured: false,
-    productType: "SINGLE",
-    categoryIds: [],
-    images: [],
-    variants: [],
+     badges: "",
+     tags: "",
+     thumbnail: "",
+     videoUrl: "",
+     beforeImage: "",
+     afterImage: "",
+     metaTitle: "",
+     metaDescription: "",
+     isActive: true,
+     isFeatured: false,
+     productType: "SINGLE",
+     categoryIds: [],
+     images: [],
+     variants: [],
   });
 
   const [variantInput, setVariantInput] = useState({
@@ -102,23 +258,24 @@ export default function ProductsPage() {
     }
   }, [authLoading, isAuthenticated, router]);
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      fetchProducts();
-      fetchCategories();
-    }
-  }, [isAuthenticated, pagination.page, searchTerm, filterCategory, filterStatus]);
+   useEffect(() => {
+     if (isAuthenticated) {
+       fetchProducts();
+       fetchCategories();
+     }
+   }, [isAuthenticated, pagination.page, searchTerm, filterCategory, filterStatus, sortBy]);
 
-  const fetchProducts = async () => {
-    try {
-      setLoading(true);
-      const params = new URLSearchParams();
-      params.append("page", pagination.page);
-      params.append("limit", pagination.limit);
-      if (searchTerm) params.append("search", searchTerm);
-      if (filterCategory) params.append("categoryId", filterCategory);
-      if (filterStatus === "active") params.append("isActive", "true");
-      if (filterStatus === "inactive") params.append("isActive", "false");
+   const fetchProducts = async () => {
+     try {
+       setLoading(true);
+       const params = new URLSearchParams();
+       params.append("page", pagination.page);
+       params.append("limit", pagination.limit);
+       if (searchTerm) params.append("search", searchTerm);
+       if (filterCategory) params.append("categoryId", filterCategory);
+       if (filterStatus === "active") params.append("isActive", "true");
+       if (filterStatus === "inactive") params.append("isActive", "false");
+       if (sortBy) params.append("sortBy", sortBy);
 
       const res = await fetch(`/api/admin/products?${params}`);
       const data = await res.json();
@@ -277,19 +434,29 @@ export default function ProductsPage() {
 
     try {
       // Process badges as array
-      const badgesArray = formData.badges
-        ? formData.badges.split(",").map((b) => b.trim()).filter(Boolean)
-        : [];
+       const badgesArray = formData.badges
+         ? formData.badges.split(",").map((b) => b.trim()).filter(Boolean)
+         : [];
+
+       const tagsArray = formData.tags
+         ? formData.tags.split(",").map((t) => t.trim()).filter(Boolean)
+         : [];
 
       const productData = {
         ...formData,
-        price: parseFloat(formData.price) || 0,
-        oldPrice: formData.oldPrice ? parseFloat(formData.oldPrice) : null,
-        mrp: formData.mrp ? parseFloat(formData.mrp) : null,
-        discount: formData.discount ? parseInt(formData.discount) : null,
-        stockQuantity: parseInt(formData.stockQuantity) || 0,
-        lowStockAlert: parseInt(formData.lowStockAlert) || 10,
-        badges: badgesArray,
+         price: parseFloat(formData.price) || 0,
+         oldPrice: formData.oldPrice ? parseFloat(formData.oldPrice) : null,
+         mrp: formData.mrp ? parseFloat(formData.mrp) : null,
+         discount: formData.discount ? parseInt(formData.discount) : null,
+         stockQuantity: parseInt(formData.stockQuantity) || 0,
+         lowStockAlert: parseInt(formData.lowStockAlert) || 10,
+         barcode: formData.barcode,
+         weight: formData.weight ? parseFloat(formData.weight) : null,
+         length: formData.length ? parseFloat(formData.length) : null,
+         width: formData.width ? parseFloat(formData.width) : null,
+         height: formData.height ? parseFloat(formData.height) : null,
+         badges: badgesArray,
+         tags: tagsArray,
         variants: formData.variants?.map(v => ({
           ...v,
           price: parseFloat(v.price) || 0,
@@ -334,6 +501,78 @@ export default function ProductsPage() {
     }
   };
 
+  const handleDuplicate = async (product) => {
+    try {
+      const res = await fetch(`/api/admin/products/${product.id}`);
+      const data = await res.json();
+
+      // Parse badges from string to array
+      let badgesArray = [];
+      if (data.badges) {
+        try {
+          badgesArray = JSON.parse(data.badges);
+        } catch {
+          badgesArray = data.badges.split(",").map((b) => b.trim());
+        }
+      }
+
+      setEditingProduct(null);
+      setFormData({
+        title: `${data.title} (Copy)`,
+        slug: `${data.slug}-copy-${Date.now()}`,
+        description: data.description || "",
+        shortDescription: data.shortDescription || "",
+        price: data.price?.toString() || "",
+        oldPrice: data.oldPrice?.toString() || "",
+        discount: data.discount?.toString() || "",
+        mrp: data.mrp?.toString() || "",
+        sku: data.sku ? `${data.sku}-COPY` : "",
+        stockQuantity: data.stockQuantity || 0,
+        lowStockAlert: data.lowStockAlert || 10,
+        isInStock: data.isInStock ?? true,
+        skinType: data.skinType || "",
+        concern: data.concern || "",
+        ingredient: data.ingredient || "",
+        howToUse: data.howToUse || "",
+      resultClaim: data.resultClaim || "",
+      badges: badgesArray.join(", "),
+      tags: data.tags || "",
+      thumbnail: data.thumbnail || "",
+        videoUrl: data.videoUrl || "",
+        beforeImage: data.beforeImage || "",
+        afterImage: data.afterImage || "",
+        metaTitle: data.metaTitle || "",
+        metaDescription: data.metaDescription || "",
+        isActive: false,
+        isFeatured: data.isFeatured ?? false,
+        productType: data.productType || "SINGLE",
+        categoryIds: data.categories?.map((c) => c.categoryId) || [],
+        images: data.images?.map((img) => ({
+          url: img.url,
+          altText: img.altText || "",
+          isPrimary: img.isPrimary,
+        })) || [],
+        variants: data.variants?.map((v) => ({
+          name: v.name,
+          sku: v.sku ? `${v.sku}-COPY` : "",
+          price: v.price?.toString() || "",
+          oldPrice: v.oldPrice?.toString() || "",
+          discount: v.discount?.toString() || "",
+          stockQuantity: v.stockQuantity || 0,
+          image: v.image || "",
+          isActive: v.isActive ?? true,
+        })) || [],
+      });
+      setShowForm(true);
+      setError("");
+      setSuccess("");
+      setFieldErrors({});
+    } catch (error) {
+      console.error("Error duplicating product:", error);
+      setError("Failed to duplicate product");
+    }
+  };
+
   const handleEdit = async (product) => {
     try {
       const res = await fetch(`/api/admin/products/${product.id}`);
@@ -359,17 +598,23 @@ export default function ProductsPage() {
         oldPrice: data.oldPrice?.toString() || "",
         discount: data.discount?.toString() || "",
         mrp: data.mrp?.toString() || "",
-        sku: data.sku || "",
-        stockQuantity: data.stockQuantity || 0,
+      sku: data.sku || "",
+      barcode: data.barcode || "",
+      weight: data.weight?.toString() || "",
+      width: data.width?.toString() || "",
+      height: data.height?.toString() || "",
+      length: data.length?.toString() || "",
+      stockQuantity: data.stockQuantity || 0,
         lowStockAlert: data.lowStockAlert || 10,
         isInStock: data.isInStock ?? true,
         skinType: data.skinType || "",
         concern: data.concern || "",
         ingredient: data.ingredient || "",
         howToUse: data.howToUse || "",
-        resultClaim: data.resultClaim || "",
-        badges: badgesArray.join(", "),
-        thumbnail: data.thumbnail || "",
+      resultClaim: data.resultClaim || "",
+      badges: badgesArray.join(", "),
+      tags: data.tags || "",
+      thumbnail: data.thumbnail || "",
         videoUrl: data.videoUrl || "",
         beforeImage: data.beforeImage || "",
         afterImage: data.afterImage || "",
@@ -452,6 +697,80 @@ export default function ProductsPage() {
     }
   };
 
+  const handleSelectProduct = (productId) => {
+    setSelectedProducts(prev => 
+      prev.includes(productId) 
+        ? prev.filter(id => id !== productId)
+        : [...prev, productId]
+    );
+  };
+
+  const handleSelectAll = () => {
+    if (selectedProducts.length === products.length) {
+      setSelectedProducts([]);
+    } else {
+      setSelectedProducts(products.map(p => p.id));
+    }
+  };
+
+  const handleBulkActivate = async () => {
+    try {
+      await Promise.all(selectedProducts.map(id => 
+        fetch(`/api/admin/products/${id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ isActive: true }),
+        })
+      ));
+      setSelectedProducts([]);
+      fetchProducts();
+    } catch (error) {
+      console.error("Error bulk activating:", error);
+    }
+  };
+
+  const handleBulkDeactivate = async () => {
+    try {
+      await Promise.all(selectedProducts.map(id => 
+        fetch(`/api/admin/products/${id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ isActive: false }),
+        })
+      ));
+      setSelectedProducts([]);
+      fetchProducts();
+    } catch (error) {
+      console.error("Error bulk deactivating:", error);
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (!confirm(`Are you sure you want to delete ${selectedProducts.length} products?`)) return;
+    try {
+      await Promise.all(selectedProducts.map(id => 
+        fetch(`/api/admin/products/${id}`, { method: "DELETE" })
+      ));
+      setSelectedProducts([]);
+      fetchProducts();
+    } catch (error) {
+      console.error("Error bulk deleting:", error);
+    }
+  };
+
+  const handleQuickStockUpdate = async (productId, newStock) => {
+    try {
+      await fetch(`/api/admin/products/${productId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ stockQuantity: parseInt(newStock) }),
+      });
+      fetchProducts();
+    } catch (error) {
+      console.error("Error updating stock:", error);
+    }
+  };
+
   const resetForm = () => {
     setShowForm(false);
     setEditingProduct(null);
@@ -523,10 +842,33 @@ export default function ProductsPage() {
             </button>
           </div>
 
-          {/* Filters */}
-          <div className="bg-white rounded-xl shadow-sm p-4 mb-6">
-            <div className="flex flex-wrap gap-4">
-              <div className="flex-1 min-w-[200px]">
+           {/* Filters */}
+           <div className="bg-white rounded-xl shadow-sm p-4 mb-6">
+             <div className="flex flex-wrap gap-4 items-end">
+               {selectedProducts.length > 0 && (
+                 <div className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-lg">
+                   <span className="text-sm font-medium text-gray-700">{selectedProducts.length} selected</span>
+                   <button
+                     onClick={handleBulkActivate}
+                     className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700"
+                   >
+                     Activate
+                   </button>
+                   <button
+                     onClick={handleBulkDeactivate}
+                     className="px-3 py-1 bg-gray-600 text-white text-sm rounded hover:bg-gray-700"
+                   >
+                     Deactivate
+                   </button>
+                   <button
+                     onClick={handleBulkDelete}
+                     className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700"
+                   >
+                     Delete
+                   </button>
+                 </div>
+               )}
+               <div className="flex-1 min-w-[200px]">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                   <input
@@ -554,18 +896,35 @@ export default function ProductsPage() {
                   <option key={cat.id} value={cat.id}>{cat.name}</option>
                 ))}
               </select>
-              <select
-                value={filterStatus}
-                onChange={(e) => {
-                  setFilterStatus(e.target.value);
-                  setPagination((prev) => ({ ...prev, page: 1 }));
-                }}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a2a0f] focus:border-transparent"
-              >
-                <option value="">All Status</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </select>
+               <select
+                 value={filterStatus}
+                 onChange={(e) => {
+                   setFilterStatus(e.target.value);
+                   setPagination((prev) => ({ ...prev, page: 1 }));
+                 }}
+                 className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a2a0f] focus:border-transparent"
+               >
+                 <option value="">All Status</option>
+                 <option value="active">Active</option>
+                 <option value="inactive">Inactive</option>
+               </select>
+               <select
+                 value={sortBy}
+                 onChange={(e) => {
+                   setSortBy(e.target.value);
+                   setPagination((prev) => ({ ...prev, page: 1 }));
+                 }}
+                 className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a2a0f] focus:border-transparent"
+               >
+                 <option value="">Sort By</option>
+                 <option value="name">Name (A-Z)</option>
+                 <option value="price-low">Price: Low to High</option>
+                 <option value="price-high">Price: High to Low</option>
+                 <option value="stock-low">Stock: Low to High</option>
+                 <option value="stock-high">Stock: High to Low</option>
+                 <option value="date-new">Date: Newest First</option>
+                 <option value="date-old">Date: Oldest First</option>
+               </select>
             </div>
           </div>
 
@@ -594,11 +953,19 @@ export default function ProductsPage() {
                 </div>
               ) : (
                 <table className="w-full">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                        Product
-                      </th>
+                   <thead className="bg-gray-50">
+                     <tr>
+                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                         <input
+                           type="checkbox"
+                           checked={selectedProducts.length === products.length && products.length > 0}
+                           onChange={handleSelectAll}
+                           className="w-4 h-4 text-[#5a2a0f] border-gray-300 rounded focus:ring-[#5a2a0f]"
+                         />
+                       </th>
+                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                         Product
+                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                         SKU
                       </th>
@@ -617,9 +984,17 @@ export default function ProductsPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
-                    {products.map((product) => (
-                      <tr key={product.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4">
+                     {products.map((product) => (
+                       <tr key={product.id} className="hover:bg-gray-50">
+                         <td className="px-6 py-4">
+                           <input
+                             type="checkbox"
+                             checked={selectedProducts.includes(product.id)}
+                             onChange={() => handleSelectProduct(product.id)}
+                             className="w-4 h-4 text-[#5a2a0f] border-gray-300 rounded focus:ring-[#5a2a0f]"
+                           />
+                         </td>
+                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
                             {product.thumbnail ? (
                               <img
@@ -632,10 +1007,17 @@ export default function ProductsPage() {
                                 <Package className="text-[#5a2a0f]" size={20} />
                               </div>
                             )}
-                            <div>
-                              <p className="font-medium text-gray-800 line-clamp-1">{product.title}</p>
-                              <p className="text-sm text-gray-500">{product.slug}</p>
-                            </div>
+                             <div>
+                               <div className="flex items-center gap-2">
+                                 <p className="font-medium text-gray-800 line-clamp-1">{product.title}</p>
+                                 {product.isFeatured && (
+                                   <span className="px-2 py-0.5 text-xs bg-yellow-100 text-yellow-700 rounded-full">
+                                     Featured
+                                   </span>
+                                 )}
+                               </div>
+                               <p className="text-sm text-gray-500">{product.slug}</p>
+                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4">
@@ -651,11 +1033,17 @@ export default function ProductsPage() {
                             )}
                           </div>
                         </td>
-                        <td className="px-6 py-4">
-                          <span className={`text-sm ${product.stockQuantity <= product.lowStockAlert ? "text-red-600" : "text-gray-600"}`}>
-                            {product.stockQuantity} {product.stockQuantity <= product.lowStockAlert && "(Low)"}
-                          </span>
-                        </td>
+                         <td className="px-6 py-4">
+                           <input
+                             type="number"
+                             value={product.stockQuantity}
+                             onChange={(e) => handleQuickStockUpdate(product.id, e.target.value)}
+                             className={`w-20 px-2 py-1 text-sm border rounded focus:ring-1 focus:ring-[#5a2a0f] focus:border-transparent ${product.stockQuantity <= product.lowStockAlert ? "text-red-600 border-red-300" : "text-gray-600 border-gray-300"}`}
+                           />
+                           {product.stockQuantity <= product.lowStockAlert && (
+                             <span className="ml-1 text-xs text-red-600">(Low)</span>
+                           )}
+                         </td>
                         <td className="px-6 py-4">
                           <button
                             onClick={() => handleToggleActive(product)}
@@ -666,29 +1054,36 @@ export default function ProductsPage() {
                           </button>
                         </td>
                         <td className="px-6 py-4">
-                          <div className="flex items-center justify-end gap-2">
-                            <button
-                              onClick={() => handleView(product)}
-                              className="p-2 text-gray-600 hover:text-[#5a2a0f] hover:bg-[#5a2a0f]/10 rounded-lg transition"
-                              title="View"
-                            >
-                              <Eye size={18} />
-                            </button>
-                            <button
-                              onClick={() => handleEdit(product)}
-                              className="p-2 text-gray-600 hover:text-[#5a2a0f] hover:bg-[#5a2a0f]/10 rounded-lg transition"
-                              title="Edit"
-                            >
-                              <Edit size={18} />
-                            </button>
-                            <button
-                              onClick={() => handleDelete(product.id)}
-                              className="p-2 text-red-600 hover:text-red-700 hover:bg-red-100 rounded-lg transition"
-                              title="Delete"
-                            >
-                              <Trash2 size={18} />
-                            </button>
-                          </div>
+                           <div className="flex items-center justify-end gap-2">
+                             <button
+                               onClick={() => handleView(product)}
+                               className="p-2 text-gray-600 hover:text-[#5a2a0f] hover:bg-[#5a2a0f]/10 rounded-lg transition"
+                               title="View"
+                             >
+                               <Eye size={18} />
+                             </button>
+                             <button
+                               onClick={() => handleDuplicate(product)}
+                               className="p-2 text-gray-600 hover:text-[#5a2a0f] hover:bg-[#5a2a0f]/10 rounded-lg transition"
+                               title="Duplicate"
+                             >
+                               <svg size={18} xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                             </button>
+                             <button
+                               onClick={() => handleEdit(product)}
+                               className="p-2 text-gray-600 hover:text-[#5a2a0f] hover:bg-[#5a2a0f]/10 rounded-lg transition"
+                               title="Edit"
+                             >
+                               <Edit size={18} />
+                             </button>
+                             <button
+                               onClick={() => handleDelete(product.id)}
+                               className="p-2 text-red-600 hover:text-red-700 hover:bg-red-100 rounded-lg transition"
+                               title="Delete"
+                             >
+                               <Trash2 size={18} />
+                             </button>
+                           </div>
                         </td>
                       </tr>
                     ))}
@@ -904,66 +1299,139 @@ export default function ProductsPage() {
                 </div>
               </div>
 
-              {/* Stock & SKU */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    SKU
-                  </label>
-                  <input
-                    type="text"
-                    name="sku"
-                    value={formData.sku}
-                    onChange={handleInputChange}
-                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#5a2a0f] focus:border-transparent ${fieldErrors.sku ? 'border-red-500 bg-red-50' : 'border-gray-300'}`}
-                    placeholder="SKU-001"
-                  />
-                  {fieldErrors.sku && (
-                    <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
-                      <X size={14} /> {fieldErrors.sku}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Stock Quantity
-                  </label>
-                  <input
-                    type="number"
-                    name="stockQuantity"
-                    value={formData.stockQuantity}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a2a0f] focus:border-transparent"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Low Stock Alert
-                  </label>
-                  <input
-                    type="number"
-                    name="lowStockAlert"
-                    value={formData.lowStockAlert}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a2a0f] focus:border-transparent"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Product Type
-                  </label>
-                  <select
-                    name="productType"
-                    value={formData.productType}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a2a0f] focus:border-transparent"
-                  >
-                    <option value="SINGLE">Single</option>
-                    <option value="COMBO">Combo</option>
-                    <option value="PACK">Pack</option>
-                  </select>
-                </div>
-              </div>
+               {/* Stock & SKU */}
+               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                 <div>
+                   <label className="block text-sm font-medium text-gray-700 mb-1">
+                     SKU
+                   </label>
+                   <input
+                     type="text"
+                     name="sku"
+                     value={formData.sku}
+                     onChange={handleInputChange}
+                     className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#5a2a0f] focus:border-transparent ${fieldErrors.sku ? 'border-red-500 bg-red-50' : 'border-gray-300'}`}
+                     placeholder="SKU-001"
+                   />
+                   {fieldErrors.sku && (
+                     <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                       <X size={14} /> {fieldErrors.sku}
+                     </p>
+                   )}
+                 </div>
+                 <div>
+                   <label className="block text-sm font-medium text-gray-700 mb-1">
+                     Barcode / UPC
+                   </label>
+                   <input
+                     type="text"
+                     name="barcode"
+                     value={formData.barcode}
+                     onChange={handleInputChange}
+                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a2a0f] focus:border-transparent"
+                     placeholder="123456789012"
+                   />
+                 </div>
+                 <div>
+                   <label className="block text-sm font-medium text-gray-700 mb-1">
+                     Stock Quantity
+                   </label>
+                   <input
+                     type="number"
+                     name="stockQuantity"
+                     value={formData.stockQuantity}
+                     onChange={handleInputChange}
+                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a2a0f] focus:border-transparent"
+                   />
+                 </div>
+                 <div>
+                   <label className="block text-sm font-medium text-gray-700 mb-1">
+                     Low Stock Alert
+                   </label>
+                   <input
+                     type="number"
+                     name="lowStockAlert"
+                     value={formData.lowStockAlert}
+                     onChange={handleInputChange}
+                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a2a0f] focus:border-transparent"
+                   />
+                 </div>
+               </div>
+
+               {/* Shipping Dimensions */}
+               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                 <div>
+                   <label className="block text-sm font-medium text-gray-700 mb-1">
+                     Weight (g)
+                   </label>
+                   <input
+                     type="number"
+                     name="weight"
+                     step="0.01"
+                     value={formData.weight}
+                     onChange={handleInputChange}
+                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a2a0f] focus:border-transparent"
+                     placeholder="0.00"
+                   />
+                 </div>
+                 <div>
+                   <label className="block text-sm font-medium text-gray-700 mb-1">
+                     Length (cm)
+                   </label>
+                   <input
+                     type="number"
+                     name="length"
+                     step="0.01"
+                     value={formData.length}
+                     onChange={handleInputChange}
+                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a2a0f] focus:border-transparent"
+                     placeholder="0.00"
+                   />
+                 </div>
+                 <div>
+                   <label className="block text-sm font-medium text-gray-700 mb-1">
+                     Width (cm)
+                   </label>
+                   <input
+                     type="number"
+                     name="width"
+                     step="0.01"
+                     value={formData.width}
+                     onChange={handleInputChange}
+                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a2a0f] focus:border-transparent"
+                     placeholder="0.00"
+                   />
+                 </div>
+                 <div>
+                   <label className="block text-sm font-medium text-gray-700 mb-1">
+                     Height (cm)
+                   </label>
+                   <input
+                     type="number"
+                     name="height"
+                     step="0.01"
+                     value={formData.height}
+                     onChange={handleInputChange}
+                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a2a0f] focus:border-transparent"
+                     placeholder="0.00"
+                   />
+                 </div>
+                 <div>
+                   <label className="block text-sm font-medium text-gray-700 mb-1">
+                     Product Type
+                   </label>
+                   <select
+                     name="productType"
+                     value={formData.productType}
+                     onChange={handleInputChange}
+                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a2a0f] focus:border-transparent"
+                   >
+                     <option value="SINGLE">Single</option>
+                     <option value="COMBO">Combo</option>
+                     <option value="PACK">Pack</option>
+                   </select>
+                 </div>
+               </div>
 
               {/* Category */}
               <div>
@@ -1016,12 +1484,9 @@ export default function ProductsPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Ingredients
                 </label>
-                <textarea
-                  name="ingredient"
+                <TiptapEditor
                   value={formData.ingredient}
-                  onChange={handleInputChange}
-                  rows={3}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a2a0f] focus:border-transparent"
+                  onChange={(content) => setFormData(prev => ({ ...prev, ingredient: content }))}
                   placeholder="List key ingredients"
                 />
               </div>
@@ -1030,12 +1495,9 @@ export default function ProductsPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   How to Use
                 </label>
-                <textarea
-                  name="howToUse"
+                <TiptapEditor
                   value={formData.howToUse}
-                  onChange={handleInputChange}
-                  rows={3}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a2a0f] focus:border-transparent"
+                  onChange={(content) => setFormData(prev => ({ ...prev, howToUse: content }))}
                   placeholder="Usage instructions"
                 />
               </div>
@@ -1054,19 +1516,33 @@ export default function ProductsPage() {
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Badges (comma separated)
-                </label>
-                <input
-                  type="text"
-                  name="badges"
-                  value={formData.badges}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a2a0f] focus:border-transparent"
-                  placeholder="Dermatologically Tested, SLS Free"
-                />
-              </div>
+               <div>
+                 <label className="block text-sm font-medium text-gray-700 mb-1">
+                   Badges (comma separated)
+                 </label>
+                 <input
+                   type="text"
+                   name="badges"
+                   value={formData.badges}
+                   onChange={handleInputChange}
+                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a2a0f] focus:border-transparent"
+                   placeholder="Dermatologically Tested, SLS Free"
+                 />
+               </div>
+
+               <div>
+                 <label className="block text-sm font-medium text-gray-700 mb-1">
+                   Tags (comma separated)
+                 </label>
+                 <input
+                   type="text"
+                   name="tags"
+                   value={formData.tags}
+                   onChange={handleInputChange}
+                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a2a0f] focus:border-transparent"
+                   placeholder="natural, skincare, organic, acne"
+                 />
+               </div>
 
               {/* Images */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

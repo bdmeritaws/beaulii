@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 
-export default function HowToUse() {
+export default function HowToUse({ product }) {
   return (
     <section className="mt-16 sm:mt-20 md:mt-24 px-4">
 
@@ -13,25 +13,13 @@ export default function HowToUse() {
           How to Use
         </h2>
 
-        {/* Image Wrapper */}
-        <div className="max-w-4xl mx-auto">
-
-          <div className="relative bg-white rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl overflow-hidden border border-[#6a2c2c]/20">
-
-            {/* Responsive Height */}
-            <div className="relative w-full h-[220px] sm:h-[320px] md:h-[450px] lg:h-[500px]">
-              <Image
-                src="/images/howtouse/3.webp"
-                alt="How to Use"
-                fill
-                className="object-cover"
-                priority
-              />
-            </div>
-
-          </div>
-
-        </div>
+        {/* Content */}
+        {product?.howToUse && (
+          <div 
+            className="max-w-4xl mx-auto bg-white rounded-xl sm:rounded-2xl p-6 sm:p-8 shadow-lg sm:shadow-xl"
+            dangerouslySetInnerHTML={{ __html: product.howToUse }}
+          />
+        )}
 
       </div>
 
