@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAdminAuth } from "@/components/AdminAuth";
 import { getImageUrl } from "@/lib/cdn";
+import { Package } from "lucide-react";
 import {
   Plus,
   Edit,

@@ -1,5 +1,5 @@
 export function getImageBaseUrl() {
-  return process.env.NEXT_PUBLIC_IMAGE_BASE_URL || '';
+  return process.env.NEXT_PUBLIC_IMAGE_BASE_URL1 || '';
 }
 
 export function getImageUrl(path) {
