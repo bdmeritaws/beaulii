@@ -50,10 +50,11 @@ export default function ProductCard({
           {/* PRODUCT IMAGE */}
           <div className="relative w-full h-40 sm:h-56">
             <Image
-              src={image && image.startsWith('http') ? image : "/images/placeholder.jpg"}
+              src={image || "/images/placeholder.webp"}
               alt={title}
               fill
               className="object-contain p-3 sm:p-5 group-hover:scale-105 transition duration-300"
+              onError={(e) => { e.target.src = '/images/placeholder.webp'; }}
             />
           </div>
 

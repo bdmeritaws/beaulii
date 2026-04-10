@@ -46,15 +46,42 @@ async function getSectionProducts(section, limit = 4) {
       where,
       orderBy: config.sortBy || { createdAt: "desc" },
       take: limit,
-      include: {
+      select: {
+        id: true,
+        slug: true,
+        title: true,
+        shortDescription: true,
+        price: true,
+        oldPrice: true,
+        discount: true,
+        thumbnail: true,
         images: {
           orderBy: { sortOrder: "asc" },
           take: 1,
+          select: { url: true },
         },
       },
     });
 
-    return products.map((p) => ({
+    return products.map((p) => {
+    let productImage = "";
+    
+    // Try product images first
+    if (p.images && p.images.length > 0 && p.images[0]?.url) {
+      productImage = getImageUrl(p.images[0].url);
+    }
+    
+    // Fallback to thumbnail
+    if (!productImage && p.thumbnail) {
+      productImage = getImageUrl(p.thumbnail);
+    }
+    
+    // Final fallback
+    if (!productImage) {
+      productImage = getImageUrl("images/placeholder.webp");
+    }
+    
+    return {
       id: p.id,
       slug: p.slug,
       title: p.title,
@@ -62,8 +89,9 @@ async function getSectionProducts(section, limit = 4) {
       price: p.price.toString(),
       oldPrice: p.oldPrice?.toString() || "",
       discount: p.discount || 0,
-      image: p.images[0]?.url ? getImageUrl(p.images[0].url) : "",
-    }));
+      image: productImage,
+    };
+  });
   } catch (error) {
     console.error("Error fetching section products:", error);
     return [];

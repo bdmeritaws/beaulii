@@ -46,6 +46,10 @@ export default async function ProductDetailsPage({ params }) {
         images: {
           orderBy: { sortOrder: "asc" },
         },
+        variants: {
+          where: { isActive: true },
+          orderBy: { price: "asc" },
+        },
         _count: {
           select: { reviews: true },
         },
@@ -53,6 +57,37 @@ export default async function ProductDetailsPage({ params }) {
     });
 
     if (product) {
+      // Collect all product images
+      const productImages = [];
+      
+      // Add main product images
+      if (product.images && product.images.length > 0) {
+        product.images.forEach(img => {
+          if (img.url) {
+            productImages.push(getImageUrl(img.url));
+          }
+        });
+      }
+      
+      // Add thumbnail as fallback
+      if (productImages.length === 0 && product.thumbnail) {
+        productImages.push(getImageUrl(product.thumbnail));
+      }
+      
+      // Add variant images
+      if (product.variants && product.variants.length > 0) {
+        product.variants.forEach(variant => {
+          if (variant.image && !productImages.includes(getImageUrl(variant.image))) {
+            productImages.push(getImageUrl(variant.image));
+          }
+        });
+      }
+      
+      // Fallback placeholder
+      if (productImages.length === 0) {
+        productImages.push(getImageUrl("images/placeholder.webp"));
+      }
+      
       // Transform to match expected format
       productData = {
         title: product.title,
@@ -64,9 +99,7 @@ export default async function ProductDetailsPage({ params }) {
         shortDescription: product.shortDescription || "",
         mrp: product.mrp?.toString() || "",
         sku: product.sku || "",
-        images: product.images.length > 0 
-          ? product.images.map(img => getImageUrl(img.url))
-          : ["/images/placeholder.jpg"],
+        images: productImages,
         beforeImage: product.beforeImage ? getImageUrl(product.beforeImage) : null,
         afterImage: product.afterImage ? getImageUrl(product.afterImage) : null,
       };
@@ -105,8 +138,7 @@ export default async function ProductDetailsPage({ params }) {
           afterImage={productData.afterImage} 
         />
         <HowToUse />
-        <WhyBeaulii />
-        <Reviews />
+        <WhyBeaulii />        <Reviews />
         <ProductSection title="bestseller" />
 
       </div>

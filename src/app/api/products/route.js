@@ -15,15 +15,22 @@ export async function GET(request) {
       isActive: true,
     };
 
-    // Filter by category slug
+    // Filter by category slug - optimized to fetch category ID first
     if (category) {
-      where.categories = {
-        some: {
-          category: {
-            slug: category,
+      // First lookup category by slug to get ID
+      const categoryData = await prisma.category.findUnique({
+        where: { slug: category, isActive: true },
+        select: { id: true },
+      });
+
+      if (categoryData) {
+        // Use category ID for direct ProductCategory lookup (more efficient)
+        where.categories = {
+          some: {
+            categoryId: categoryData.id,
           },
-        },
-      };
+        };
+      }
     }
 
     // Filter by product type
@@ -53,7 +60,17 @@ export async function GET(request) {
 
     // Transform products to match frontend format
     const transformedProducts = products.map((product) => {
-      const primaryImage = product.images[0]?.url ? getImageUrl(product.images[0].url) : null;
+      let primaryImage = null;
+      
+      // Check product images first
+      if (product.images && product.images.length > 0) {
+        primaryImage = product.images[0]?.url ? getImageUrl(product.images[0].url) : null;
+      }
+      
+      // Fallback to thumbnail if no images found
+      if (!primaryImage && product.thumbnail) {
+        primaryImage = getImageUrl(product.thumbnail);
+      }
       
       return {
         id: product.id,

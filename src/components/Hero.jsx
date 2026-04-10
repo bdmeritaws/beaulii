@@ -83,7 +83,7 @@ export default function Hero() {
   }
 
   const slides = banners.map(banner => ({
-    image: banner.image ? getImageUrl(banner.image) : "/images/placeholder.jpg",
+    image: banner.image ? getImageUrl(banner.image) : "/images/placeholder.webp",
     title: banner.title || "",
     subtitle: banner.subtitle || "",
     link: banner.link || null,

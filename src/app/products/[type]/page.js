@@ -50,7 +50,7 @@ export default async function ProductPage({ params }) {
             </div>
           </div>
 
-          <ProductsGrid category={type} />
+          <ProductsGrid category={type} type={null} />
         </div>
       </section>
     );
