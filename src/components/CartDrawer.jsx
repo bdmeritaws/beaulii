@@ -80,7 +80,7 @@ export default function CartDrawer() {
                       {item.title}
                     </h3>
                     <p className="text-[#5a2a0f] font-bold mb-2">
-                      ৳ {item.price}
+                      $ {item.price}
                     </p>
 
                     {/* Quantity Controls */}
@@ -128,7 +128,7 @@ export default function CartDrawer() {
             <div className="flex justify-between items-center mb-4">
               <span className="text-gray-600">Subtotal</span>
               <span className="text-xl font-bold text-[#3b1f0f]">
-                ৳ {cartTotal.toFixed(2)}
+                $ {cartTotal.toFixed(2)}
               </span>
             </div>
 

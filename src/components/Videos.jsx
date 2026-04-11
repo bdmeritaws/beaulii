@@ -46,10 +46,10 @@ export default function Videos() {
                   </h4>
                   <div className="flex gap-2 text-xs mt-1">
                     <span className="font-bold text-[#3b1f0f]">
-                      ৳ 5.00
+                      $ 5.00
                     </span>
                     <span className="line-through text-gray-400">
-                      ৳ 8.00
+                      $ 8.00
                     </span>
                   </div>
                 </div>

@@ -85,12 +85,12 @@ export default function CartPage() {
                     </Link>
 
                     <p className="text-[#5a2a0f] font-bold mt-1">
-                      ৳ {item.price}
+                      $ {item.price}
                     </p>
 
                     {item.oldPrice && (
                       <p className="text-gray-400 text-sm line-through">
-                        ৳ {item.oldPrice}
+                        $ {item.oldPrice}
                       </p>
                     )}
 
@@ -130,7 +130,7 @@ export default function CartPage() {
                   {/* Item Total */}
                   <div className="hidden md:block text-right">
                     <p className="text-lg font-bold text-[#3b1f0f]">
-                      ৳ {(parseFloat(item.price) * item.quantity).toFixed(2)}
+                      $ {(parseFloat(item.price) * item.quantity).toFixed(2)}
                     </p>
                   </div>
                 </div>
@@ -156,7 +156,7 @@ export default function CartPage() {
                 <div className="space-y-3 border-b pb-4 mb-4">
                   <div className="flex justify-between text-gray-600">
                     <span>Subtotal</span>
-                    <span>৳ {cartTotal.toFixed(2)}</span>
+                    <span>$ {cartTotal.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-gray-600">
                     <span>Shipping</span>
@@ -164,7 +164,7 @@ export default function CartPage() {
                   </div>
                   <div className="flex justify-between text-gray-600">
                     <span>Tax</span>
-                    <span>৳ 0.00</span>
+                    <span>$ 0.00</span>
                   </div>
                 </div>
 
@@ -173,7 +173,7 @@ export default function CartPage() {
                     Total
                   </span>
                   <span className="text-2xl font-bold text-[#3b1f0f]">
-                    ৳ {cartTotal.toFixed(2)}
+                    $ {cartTotal.toFixed(2)}
                   </span>
                 </div>
 

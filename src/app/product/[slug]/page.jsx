@@ -123,7 +123,7 @@ export default async function ProductDetailsPage({ params }) {
   }
 
   return (
-    <section className="bg-[#f4f1ee] min-h-screen py-10">
+       <section className="bg-[#f4f1ee] min-h-screen pt-24 pb-12 sm:pt-15 sm:pb-10 md:pt-15 md:pb-12">
       <div className="max-w-7xl mx-auto px-4">
 
         {/* ===== TOP SECTION ===== */}

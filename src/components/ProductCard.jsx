@@ -83,12 +83,12 @@ export default function ProductCard({
 
           {oldPrice && (
             <span className="text-gray-400 line-through">
-              ৳ {oldPrice}
+              $ {oldPrice}
             </span>
           )}
 
           <span className="font-bold text-[#3b1f0f] text-sm sm:text-base">
-            ৳ {productPrice}
+            $ {productPrice}
           </span>
 
           {discount && (

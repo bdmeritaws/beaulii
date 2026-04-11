@@ -5,12 +5,30 @@ import Image from "next/image";
 const reviews = [
   {
     beforeAfter: "/images/reviews/1.webp",
+    name: "Nusrat Jahan",
+    location: "Dhaka, Bangladesh",
+    rating: "4.8/5",
+    title: "The only cream that worked for my stretch marks!",
+    description:
+      "I've tried so many products, but this cream is truly a game-changer! Within a few weeks, I noticed my stretch marks fading.",
   },
   {
     beforeAfter: "/images/reviews/2.webp",
+    name: "Tanvir Ahmed",
+    location: "Chattogram, Bangladesh",
+    rating: "4.7/5",
+    title: "Visible results in just weeks!",
+    description:
+      "Honestly impressed with the quality. My skin feels smoother and healthier. Highly recommended for daily use.",
   },
   {
     beforeAfter: "/images/reviews/3.webp",
+    name: "Sadia Islam",
+    location: "Khulna, Bangladesh",
+    rating: "4.9/5",
+    title: "Best skincare product I’ve used!",
+    description:
+      "The texture, smell, and results are amazing. I can see a big difference already. Will definitely buy again.",
   },
 ];
 
@@ -62,29 +80,28 @@ export default function Reviews() {
                   />
                   <div>
                     <h4 className="font-semibold text-[#3b1f0f]">
-                      Rakshana Sharmaa
+                      {item.name}
                     </h4>
                     <p className="text-sm text-gray-500">
-                      Rohtak, Haryana
+                      {item.location}
                     </p>
                     <div className="flex items-center gap-2 text-sm mt-1">
-                      <span className="text-yellow-500">
-                        ★★★★★
-                      </span>
+                      <span className="text-yellow-500">★★★★★</span>
                       <span className="text-[#3b1f0f] font-medium">
-                        4.8/5
+                        {item.rating}
                       </span>
                     </div>
                   </div>
                 </div>
 
-                {/* Review Text */}
+                {/* Review Title */}
                 <p className="font-semibold text-[#3b1f0f] mb-2">
-                  The only cream that worked for my stretch marks !
+                  {item.title}
                 </p>
 
+                {/* Review Text */}
                 <p className="text-sm text-gray-600 mb-6">
-                  I've tried so many products, but Pokonut Stretch Mark Cream is truly a game-changer! Within few weeks, I noticed my stretch marks fading.
+                  {item.description}
                 </p>
 
                 {/* Button */}

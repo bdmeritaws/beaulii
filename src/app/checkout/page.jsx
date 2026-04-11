@@ -412,7 +412,7 @@ export default function CheckoutPage() {
                         {item.title}
                       </h3>
                       <p className="text-sm text-[#5a2a0f] font-semibold">
-                        ৳ {(parseFloat(item.price) * item.quantity).toFixed(2)}
+                        $ {(parseFloat(item.price) * item.quantity).toFixed(2)}
                       </p>
                     </div>
                   </div>
@@ -423,21 +423,21 @@ export default function CheckoutPage() {
               <div className="space-y-3 border-t pt-4">
                 <div className="flex justify-between text-gray-600">
                   <span>Subtotal</span>
-                  <span>৳ {cartTotal.toFixed(2)}</span>
+                  <span>$ {cartTotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Shipping</span>
                   <span className={shipping === 0 ? "text-green-600" : ""}>
-                    {shipping === 0 ? "Free" : `৳ ${shipping.toFixed(2)}`}
+                    {shipping === 0 ? "Free" : `$ ${shipping.toFixed(2)}`}
                   </span>
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Tax (8%)</span>
-                  <span>৳ {tax.toFixed(2)}</span>
+                  <span>$ {tax.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Discount</span>
-                  <span className="text-green-600">-৳ 0.00</span>
+                  <span className="text-green-600">-$ 0.00</span>
                 </div>
               </div>
 
@@ -445,12 +445,12 @@ export default function CheckoutPage() {
                 <div className="flex justify-between items-center">
                   <span className="text-lg font-bold text-[#3b1f0f]">Total</span>
                   <span className="text-2xl font-bold text-[#3b1f0f]">
-                    ৳ {orderTotal.toFixed(2)}
+                    $ {orderTotal.toFixed(2)}
                   </span>
                 </div>
                 {cartTotal < 50 && (
                   <p className="text-xs text-green-600 mt-2">
-                    Add ৳ {(50 - cartTotal).toFixed(2)} more for free shipping!
+                    Add $ {(50 - cartTotal).toFixed(2)} more for free shipping!
                   </p>
                 )}
               </div>

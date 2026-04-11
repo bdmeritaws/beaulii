@@ -17,25 +17,25 @@ import {
 } from "lucide-react";
 
 const stats = [
-  { title: "Total Revenue", value: "৳2,45,890", change: "+12.5%", positive: true, icon: DollarSign },
+  { title: "Total Revenue", value: "$2,45,890", change: "+12.5%", positive: true, icon: DollarSign },
   { title: "Total Orders", value: "1,234", change: "+8.2%", positive: true, icon: ShoppingBag },
   { title: "Total Customers", value: "5,678", change: "+15.3%", positive: true, icon: Users },
   { title: "Page Views", value: "45,890", change: "-2.4%", positive: false, icon: Eye },
 ];
 
 const recentOrders = [
-  { id: "#ORD-001", customer: "Rahul Sharma", product: "Dark Patch Reducer Cream", amount: "৳3,999", status: "Pending" },
-  { id: "#ORD-002", customer: "Priya Patel", product: "Flawless Skin Combo", amount: "৳2,999", status: "Processing" },
-  { id: "#ORD-003", customer: "Amit Kumar", product: "Foot Care Cream", amount: "৳1,999", status: "Delivered" },
-  { id: "#ORD-004", customer: "Sneha Gupta", product: "Stretch Mark Cream", amount: "৳3,999", status: "Pending" },
-  { id: "#ORD-005", customer: "Vikram Singh", product: "Dark Patch Reducer Cream", amount: "৳3,999", status: "Shipped" },
+  { id: "#ORD-001", customer: "Rahul Sharma", product: "Dark Patch Reducer Cream", amount: "$3,999", status: "Pending" },
+  { id: "#ORD-002", customer: "Priya Patel", product: "Flawless Skin Combo", amount: "$2,999", status: "Processing" },
+  { id: "#ORD-003", customer: "Amit Kumar", product: "Foot Care Cream", amount: "$1,999", status: "Delivered" },
+  { id: "#ORD-004", customer: "Sneha Gupta", product: "Stretch Mark Cream", amount: "$3,999", status: "Pending" },
+  { id: "#ORD-005", customer: "Vikram Singh", product: "Dark Patch Reducer Cream", amount: "$3,999", status: "Shipped" },
 ];
 
 const topProducts = [
-  { name: "Dark Patch Reducer Cream", sales: 234, revenue: "৳9,35,766" },
-  { name: "Flawless Skin Combo", sales: 189, revenue: "৳5,66,811" },
-  { name: "Foot Care Cream", sales: 156, revenue: "৳3,11,844" },
-  { name: "Stretch Mark Cream", sales: 123, revenue: "৳4,91,877" },
+  { name: "Dark Patch Reducer Cream", sales: 234, revenue: "$9,35,766" },
+  { name: "Flawless Skin Combo", sales: 189, revenue: "$5,66,811" },
+  { name: "Foot Care Cream", sales: 156, revenue: "$3,11,844" },
+  { name: "Stretch Mark Cream", sales: 123, revenue: "$4,91,877" },
 ];
 
 export default function AdminDashboard() {

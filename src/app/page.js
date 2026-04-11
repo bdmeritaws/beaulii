@@ -6,11 +6,18 @@ import Reviews from "@/components/Reviews";
 import Videos from "@/components/Videos";
 import { getImageUrl } from "@/lib/cdn";
 
+// Mapping object: sectionKey (from DB) -> productType
+const typeMap = {
+  "single-products": "SINGLE",
+  "combo-products": "COMBO",
+  "pack-products": "PACK",
+};
+
 // Default sections fallback
 const defaultSections = [
-  { title: "Bestseller", sectionKey: "bestsellers", type: "PRODUCTS" },
-  { title: "New Arrival", sectionKey: "new-arrivals", type: "PRODUCTS" },
-  { title: "Combo Deals", sectionKey: "combo", type: "PRODUCTS" },
+  { title: "Single Products", sectionKey: "single-products", type: "PRODUCTS" },
+  { title: "Combo Deals", sectionKey: "combo-products", type: "PRODUCTS" },
+  { title: "Pack Deals", sectionKey: "pack-products", type: "PRODUCTS" },
 ];
 
 // Fetch products for a section based on config
@@ -23,6 +30,15 @@ async function getSectionProducts(section, limit = 4) {
 
     const where = { isActive: true };
 
+    // Priority 1: Use config.productType if explicitly set
+    if (config.productType) {
+      where.productType = config.productType.toUpperCase();
+    } 
+    // Priority 2: Use sectionKey-based mapping (typeMap)
+    else if (typeMap[section.sectionKey]) {
+      where.productType = typeMap[section.sectionKey];
+    }
+
     // Filter by category if specified
     if (config.categorySlug) {
       where.categories = {
@@ -30,11 +46,6 @@ async function getSectionProducts(section, limit = 4) {
           category: { slug: config.categorySlug },
         },
       };
-    }
-
-    // Filter by product type
-    if (config.productType) {
-      where.productType = config.productType.toUpperCase();
     }
 
     // Filter by featured
@@ -64,34 +75,34 @@ async function getSectionProducts(section, limit = 4) {
     });
 
     return products.map((p) => {
-    let productImage = "";
-    
-    // Try product images first
-    if (p.images && p.images.length > 0 && p.images[0]?.url) {
-      productImage = getImageUrl(p.images[0].url);
-    }
-    
-    // Fallback to thumbnail
-    if (!productImage && p.thumbnail) {
-      productImage = getImageUrl(p.thumbnail);
-    }
-    
-    // Final fallback
-    if (!productImage) {
-      productImage = getImageUrl("images/placeholder.webp");
-    }
-    
-    return {
-      id: p.id,
-      slug: p.slug,
-      title: p.title,
-      shortDescription: p.shortDescription,
-      price: p.price.toString(),
-      oldPrice: p.oldPrice?.toString() || "",
-      discount: p.discount || 0,
-      image: productImage,
-    };
-  });
+      let productImage = "";
+      
+      // Try product images first
+      if (p.images && p.images.length > 0 && p.images[0]?.url) {
+        productImage = getImageUrl(p.images[0].url);
+      }
+      
+      // Fallback to thumbnail
+      if (!productImage && p.thumbnail) {
+        productImage = getImageUrl(p.thumbnail);
+      }
+      
+      // Final fallback
+      if (!productImage) {
+        productImage = getImageUrl("images/placeholder.webp");
+      }
+      
+      return {
+        id: p.id,
+        slug: p.slug,
+        title: p.title,
+        shortDescription: p.shortDescription,
+        price: p.price.toString(),
+        oldPrice: p.oldPrice?.toString() || "",
+        discount: p.discount || 0,
+        image: productImage,
+      };
+    });
   } catch (error) {
     console.error("Error fetching section products:", error);
     return [];

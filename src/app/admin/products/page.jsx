@@ -1025,10 +1025,10 @@ export default function ProductsPage() {
                         </td>
                         <td className="px-6 py-4">
                           <div>
-                            <span className="font-medium text-gray-800">৳{parseFloat(product.price).toFixed(2)}</span>
+                            <span className="font-medium text-gray-800">${parseFloat(product.price).toFixed(2)}</span>
                             {product.oldPrice && product.oldPrice > product.price && (
                               <span className="ml-2 text-sm text-gray-400 line-through">
-                                ৳{parseFloat(product.oldPrice).toFixed(2)}
+                                ${parseFloat(product.oldPrice).toFixed(2)}
                               </span>
                             )}
                           </div>
@@ -1577,7 +1577,7 @@ export default function ProductsPage() {
                         src={getImageUrl(formData.thumbnail)} 
                         alt="Thumbnail Preview" 
                         className="w-24 h-24 object-cover rounded-lg border"
-                        onError={(e) => { e.target.src = '/images/placeholder.jpg'; }}
+                        onError={(e) => { e.target.src = '/images/placeholder.webp'; }}
                       />
                     </div>
                   )}
@@ -1705,7 +1705,7 @@ export default function ProductsPage() {
                   <div className="space-y-2">
                     {formData.variants.map((variant, index) => (
                       <div key={index} className="flex items-center justify-between bg-gray-50 p-2 rounded">
-                        <span>{variant.name} - ৳{variant.price} (Stock: {variant.stockQuantity})</span>
+                        <span>{variant.name} - ${variant.price} (Stock: {variant.stockQuantity})</span>
                         <button
                           type="button"
                           onClick={() => handleRemoveVariant(index)}
@@ -1885,12 +1885,12 @@ export default function ProductsPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-sm text-gray-500">Price</p>
-                  <p className="font-medium">৳{parseFloat(viewProduct.price).toFixed(2)}</p>
+                  <p className="font-medium">${parseFloat(viewProduct.price).toFixed(2)}</p>
                 </div>
                 {viewProduct.oldPrice && (
                   <div>
                     <p className="text-sm text-gray-500">Old Price</p>
-                    <p className="font-medium line-through text-gray-400">৳{parseFloat(viewProduct.oldPrice).toFixed(2)}</p>
+                    <p className="font-medium line-through text-gray-400">${parseFloat(viewProduct.oldPrice).toFixed(2)}</p>
                   </div>
                 )}
                 <div>
@@ -1948,7 +1948,7 @@ export default function ProductsPage() {
                   <p className="text-sm text-gray-500">Variants</p>
                   <div className="space-y-1 mt-1">
                     {viewProduct.variants.map((v, i) => (
-                      <p key={i} className="text-sm">{v.name} - ৳{parseFloat(v.price).toFixed(2)} (Stock: {v.stockQuantity})</p>
+                      <p key={i} className="text-sm">{v.name} - ${parseFloat(v.price).toFixed(2)} (Stock: {v.stockQuantity})</p>
                     ))}
                   </div>
                 </div>
