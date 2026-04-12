@@ -59,11 +59,11 @@ export default function ProductCard({
           </div>
 
           {/* SUBTITLE STRIP */}
-          {subtitle && (
+          {/* {subtitle && (
             <div className="bg-[#8b5e3c] text-white text-center py-1.5 text-[10px] sm:text-sm font-medium">
               {subtitle}
             </div>
-          )}
+          )} */}
 
         </div>
       </Link>

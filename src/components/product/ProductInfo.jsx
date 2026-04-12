@@ -20,6 +20,7 @@ export default function ProductInfo({ product }) {
       image: product.images?.[0] || product.images[0],
       oldPrice: product.oldPrice,
     }, qty);
+
     toast.success(`${qty} × ${product.title} added to cart!`);
   };
 
@@ -29,33 +30,34 @@ export default function ProductInfo({ product }) {
       {/* Rating */}
       <div className="flex items-center gap-2 text-sm mb-2">
         <span className="text-yellow-500 text-lg">★★★★★</span>
-        <span className="text-gray-600 text-xs sm:text-sm">
+        <span className="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">
           {product.reviews} Reviews
         </span>
       </div>
 
       {/* Title */}
-      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#3b1f0f] mb-4 leading-snug">
+      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-900 mb-4 leading-snug">
         {product.title}
       </h1>
 
       {/* Badges */}
       <div className="flex gap-2 sm:gap-3 mb-4 flex-wrap">
-        <span className="bg-[#e9dfd6] px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-medium">
+        <span className="bg-[#e9dfd6] dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-medium">
           Dermatologically Tested
         </span>
-        <span className="bg-[#e9dfd6] px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-medium">
+
+        <span className="bg-[#e9dfd6] dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-medium">
           SLS & Paraben Free
         </span>
       </div>
 
       {/* Price */}
       <div className="flex flex-wrap items-center gap-3 mb-2">
-        <span className="line-through text-gray-400 text-sm">
+        <span className="line-through text-gray-400 dark:text-gray-500 text-sm">
           $ {product.oldPrice}
         </span>
 
-        <span className="text-xl sm:text-2xl font-bold text-[#3b1f0f]">
+        <span className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
           $ {product.price}
         </span>
 
@@ -64,7 +66,7 @@ export default function ProductInfo({ product }) {
         </span>
       </div>
 
-      <p className="text-xs sm:text-sm text-gray-500 mb-6">
+      <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-6">
         MRP (Inclusive of all Taxes)
       </p>
 
@@ -73,7 +75,7 @@ export default function ProductInfo({ product }) {
         {[1, 2, 3].map((pack) => (
           <div
             key={pack}
-            className="bg-white border rounded-lg p-3 text-center cursor-pointer hover:border-[#5a2a0f] transition shadow-sm"
+            className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-3 text-center cursor-pointer hover:border-gray-800 dark:hover:border-white transition shadow-sm"
           >
             <div className="relative w-full h-14 sm:h-16 mb-2">
               <Image
@@ -83,40 +85,41 @@ export default function ProductInfo({ product }) {
                 className="object-contain"
               />
             </div>
-            <p className="text-[11px] sm:text-xs font-semibold">
+
+            <p className="text-[11px] sm:text-xs font-semibold text-gray-900 dark:text-gray-100">
               Results Pack
             </p>
-            <p className="text-[10px] sm:text-xs text-gray-600">
+
+            <p className="text-[10px] sm:text-xs text-gray-600 dark:text-gray-400">
               Save $ 9
             </p>
           </div>
         ))}
       </div>
 
-      {/* ===== ACTION SECTION ===== */}
+      {/* ACTION SECTION */}
       <div className="space-y-4 mb-8">
 
-        {/* Desktop Layout */}
         <div className="flex flex-col sm:flex-row items-center gap-4">
 
           {/* Quantity */}
           <div className="flex justify-center sm:justify-start w-full sm:w-auto">
-            <div className="flex items-center bg-white shadow-sm border border-[#5a2a0f] rounded-xl overflow-hidden">
+            <div className="flex items-center bg-white dark:bg-gray-900 shadow-sm border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden">
 
               <button
                 onClick={() => setQty(Math.max(1, qty - 1))}
-                className="w-12 h-12 flex items-center justify-center text-xl font-bold text-[#3b1f0f] hover:bg-[#f4f1ee] transition active:scale-95"
+                className="w-12 h-12 flex items-center justify-center text-xl font-bold text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 transition active:scale-95"
               >
                 −
               </button>
 
-              <span className="w-14 text-center text-base font-semibold">
+              <span className="w-14 text-center text-base font-semibold text-gray-900 dark:text-gray-100">
                 {qty}
               </span>
 
               <button
                 onClick={() => setQty(qty + 1)}
-                className="w-12 h-12 flex items-center justify-center text-xl font-bold text-[#3b1f0f] hover:bg-[#f4f1ee] transition active:scale-95"
+                className="w-12 h-12 flex items-center justify-center text-xl font-bold text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 transition active:scale-95"
               >
                 +
               </button>
@@ -127,7 +130,7 @@ export default function ProductInfo({ product }) {
           {/* Add To Cart */}
           <button 
             onClick={handleAddToCart}
-            className="w-full sm:flex-1 bg-[#5a2a0f] text-white py-3 rounded-xl font-semibold tracking-wide hover:bg-[#3b1f0f] transition shadow-md"
+            className="w-full sm:flex-1 bg-[#5a2a0f] text-white dark:bg-white dark:text-black py-3 rounded-xl font-semibold tracking-wide hover:opacity-90 transition shadow-md"
           >
             ADD TO CART
           </button>
@@ -135,35 +138,35 @@ export default function ProductInfo({ product }) {
         </div>
 
         {/* Buy Now */}
-        <button className="w-full border-2 border-[#5a2a0f] text-[#5a2a0f] py-3 rounded-xl font-semibold tracking-wide hover:bg-[#5a2a0f] hover:text-white transition">
+        <button className="w-full border-2 border-gray-900 dark:border-gray-200 text-gray-900 dark:text-gray-900 py-3 rounded-xl font-semibold tracking-wide hover:bg-gray-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition">
           BUY IT NOW
         </button>
 
       </div>
 
       {/* Delivery Timeline */}
-      <div className="bg-[#efe6dc] rounded-xl p-4 sm:p-6 grid grid-cols-3 text-center text-xs sm:text-sm gap-2">
+      <div className="bg-[#efe6dc] dark:bg-gray-900 rounded-xl p-4 sm:p-6 grid grid-cols-3 text-center text-xs sm:text-sm gap-2">
 
         <div>
-          <div className="text-[#5a2a0f] text-xl sm:text-2xl mb-1">📦</div>
-          <p className="font-semibold">Feb 19</p>
-          <p className="text-gray-600 text-[10px] sm:text-xs">
+          <div className="text-gray-900 dark:text-gray-100 text-xl sm:text-2xl mb-1">📦</div>
+          <p className="font-semibold text-gray-900 dark:text-gray-100">Feb 19</p>
+          <p className="text-gray-600 dark:text-gray-400 text-[10px] sm:text-xs">
             Order Placed
           </p>
         </div>
 
         <div>
-          <div className="text-[#5a2a0f] text-xl sm:text-2xl mb-1">🚚</div>
-          <p className="font-semibold">Feb 20</p>
-          <p className="text-gray-600 text-[10px] sm:text-xs">
+          <div className="text-gray-900 dark:text-gray-100 text-xl sm:text-2xl mb-1">🚚</div>
+          <p className="font-semibold text-gray-900 dark:text-gray-100">Feb 20</p>
+          <p className="text-gray-600 dark:text-gray-400 text-[10px] sm:text-xs">
             Order Shipped
           </p>
         </div>
 
         <div>
-          <div className="text-[#5a2a0f] text-xl sm:text-2xl mb-1">🏠</div>
-          <p className="font-semibold">Feb 23-24</p>
-          <p className="text-gray-600 text-[10px] sm:text-xs">
+          <div className="text-gray-900 dark:text-gray-100 text-xl sm:text-2xl mb-1">🏠</div>
+          <p className="font-semibold text-gray-900 dark:text-gray-100">Feb 23-24</p>
+          <p className="text-gray-600 dark:text-gray-400 text-[10px] sm:text-xs">
             Delivery
           </p>
         </div>

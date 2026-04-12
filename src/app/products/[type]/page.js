@@ -93,7 +93,7 @@ export default async function ProductPage({ params }) {
   }
 
   return (
-    <section className="bg-[#f4f1ee] min-h-screen py-8 sm:py-10 md:py-12">
+    <section className="bg-[#f4f1ee] min-h-screen pt-24 pb-12 sm:pt-28 sm:pb-10 md:pt-32 md:pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
 
         {/* PAGE TITLE */}
