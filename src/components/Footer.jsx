@@ -24,10 +24,10 @@ export default function Footer() {
             />
 
             {/* Phone */}
-            <div className="flex items-center gap-3 mb-3">
+            {/* <div className="flex items-center gap-3 mb-3">
               <Phone size={18} className="text-green-400" />
               <span>01811-441177</span>
-            </div>
+            </div> */}
 
             {/* Email */}
             <div className="flex items-center gap-3 mb-6">
